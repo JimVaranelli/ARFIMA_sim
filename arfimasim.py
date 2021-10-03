@@ -2,7 +2,10 @@ import sys
 import numpy as np
 from scipy.ndimage.interpolation import shift
 from numpy.testing import assert_equal, assert_almost_equal
-from statsmodels.tsa.arima_model import ARMA, ARIMA
+# statsmodels 0.13 deprecates arima_model.ARIMA
+# in favor of arima.model.ARIMA
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.arima_model import ARMA
 from statsmodels.tsa.stattools import adfuller
 
 # binomial expansion for ARFIMA models
@@ -218,9 +221,8 @@ def main():
     #   arima = ARFIMA_sim([0.3], [0.2], 1, 1000)
     series = np.genfromtxt("results\\arima.csv", delimiter=",")
     af = ARIMA(series, order=(1,1,1)).fit()
-    assert_almost_equal(af.params[0], -0.00787, decimal=4)
-    assert_almost_equal(af.params[1], 0.37529, decimal=4)
-    assert_almost_equal(af.params[2], -0.27557, decimal=4)
+    assert_almost_equal(af.arparams[0], 0.37587, decimal=4)
+    assert_almost_equal(af.maparams[0], -0.27611, decimal=4)
     adf = adfuller(series, regression='nc')
     assert_equal(adf[2], 2)
     assert_almost_equal(adf[0], -1.95844, decimal=4)
